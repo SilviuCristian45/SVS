@@ -5,7 +5,11 @@ let Schema = mongoose.Schema;
 let UserModelSchema = new Schema({
   username: String,
   password: String,
-  email:String
+  email:String,
+  profile:{
+    type:Schema.Types.ObjectId,
+    ref:"Profile"
+  }
 });
 
 // Compile model from schema

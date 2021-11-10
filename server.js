@@ -26,6 +26,7 @@ app.use(express.json({limit: '20mb'}))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
 app.use(express.static('public'));
 app.use('/authentication', require('./routes/authentication'));
+app.use('/content', require('./routes/content'));
 
 //database connection 
 let mongoDB = 'mongodb://127.0.0.1/svs';
@@ -35,6 +36,9 @@ let db = mongoose.connection;
 
 const adminUserModel = require('./models/AdminUser');
 const userModel = require('./models/User');
+const producerModel = require('./models/Producer');
+const contentModel = require('./models/Content');
+const profileModel = require('./models/Profile');
 
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));

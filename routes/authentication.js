@@ -33,7 +33,7 @@ router.post('/login', async (req, res) => {
 
     //get the user from the database with the given email 
     const userFound = await userModel.findOne({email:email});
-    console.log(userFound.password.toString());
+
     if (userFound.password.toString() !== pass) {
         res.send('email or password incorrect');
         return;
@@ -44,7 +44,9 @@ router.post('/login', async (req, res) => {
         email,pass
     };
 
-    res.render('index', {userEmail : email});
+    res.redirect('/content/browse');
+    //luam clipurile din collection-ul content
+    //res.render('index', {userEmail : email});
 });
 
 function validatePassword(password){
