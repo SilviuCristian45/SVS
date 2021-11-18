@@ -1,3 +1,5 @@
+//buttons 
+
 //redirect to the register page if it is clicked
 document.getElementById('register-btn').addEventListener('click', () => {
     window.location = '../register.html';
@@ -9,3 +11,4 @@ document.getElementById('login-btn').addEventListener('click', () => {
     window.location = '../login.html';
     console.log('we go to the login page');
 });
+

@@ -9,6 +9,11 @@ let ContentModelSchema = new Schema({
       type:Schema.Types.ObjectId,
       ref:"Producer"
   },
+  category:{
+    type:Schema.Types.ObjectId,
+    ref:"Category",
+    default:null
+  },
   quality:String
 });
 

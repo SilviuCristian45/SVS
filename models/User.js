@@ -6,9 +6,13 @@ let UserModelSchema = new Schema({
   username: String,
   password: String,
   email:String,
-  profile:{
-    type:Schema.Types.ObjectId,
-    ref:"Profile"
+  profiles:{
+    type:[{
+        type:Schema.Types.ObjectId,
+        ref:"User"
+      }
+    ],
+    default:['618d4f41633aaf355f05f4a3']
   }
 });
 

@@ -1,1 +1,7 @@
 <h1>Example App: Welcome {{{userEmail}}}</h1>
+
+<ul>
+    {{#each contentPaths}}
+        <li> <a href="/content/viewContent/{{this}}"> {{this}} </a> </li>
+    {{/each}}
+</ul>

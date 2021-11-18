@@ -1,0 +1,11 @@
+<h1>New index Example App: Welcome {{{userEmail}}}</h1>
+
+<ul>
+    {{#each categories}}
+        <ul>{{this.name}}
+            {{#each this.contentsObjects}} <!-- parcurgem obiectele de tip content-->
+                <li> <a href="/content/viewContent/{{this.path}}"> {{this.path}} </a> </li>
+            {{/each}}
+        </ul>
+    {{/each}}
+</ul>

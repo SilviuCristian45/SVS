@@ -5,10 +5,11 @@ let Schema = mongoose.Schema;
 
 let ProfileModelSchema = new Schema({
   name: String,
-  users:[{
+  user:{
       type:Schema.Types.ObjectId,
-      ref:"User"
-  }]
+      ref:"User",
+      default:'61851dc2f14da82719065f4b'
+  }
 });
 
 // Compile model from schema

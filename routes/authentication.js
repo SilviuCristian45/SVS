@@ -24,6 +24,7 @@ router.post('/register', async (req, res) => {
     const newUser = new userModel({username:'Silviu', email, password:pass});
     newUser.save( err => { console.log(err);} );
 
+    res.send('user inregistrat cu succes');
     
 });
 
@@ -44,7 +45,10 @@ router.post('/login', async (req, res) => {
         email,pass
     };
 
-    res.redirect('/content/browse');
+    //console.log(req.session.user);
+
+    res.redirect('/profiles');
+    //res.redirect('/content/browse');
     //luam clipurile din collection-ul content
     //res.render('index', {userEmail : email});
 });
