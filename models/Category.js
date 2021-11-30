@@ -11,7 +11,7 @@ let CategoryModelSchema = new Schema({
       }
     ],
     default:[null]
-  }
+  } 
 });
 
 // Compile model from schema

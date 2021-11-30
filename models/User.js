@@ -8,10 +8,10 @@ let UserModelSchema = new Schema({
   email:String,
   profiles:{
     type:[{
-        type:Schema.Types.ObjectId,
-        ref:"User"
+        type:Schema.Types.ObjectId
       }
     ],
+    ref:"Profile",
     default:['618d4f41633aaf355f05f4a3']
   }
 });

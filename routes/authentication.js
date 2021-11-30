@@ -3,8 +3,6 @@ const router = express.Router();
 const userModel = require('../models/User');
 const emailValidator = require('deep-email-validator');
  
-
-
 router.post('/register', async (req, res) => {
     const email = req.body.email;
     const pass = req.body.password;
@@ -42,7 +40,8 @@ router.post('/login', async (req, res) => {
 
     req.session.authenticated = true;
     req.session.user = {
-        email,pass
+        userid:userFound._id,
+        email:email
     };
 
     //console.log(req.session.user);
