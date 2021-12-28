@@ -14,7 +14,12 @@ let ContentModelSchema = new Schema({
     ref:"Category",
     default:null
   },
-  quality:String
+  quality:String,
+  parentSeries: {
+    type:Schema.Types.ObjectId,
+    ref:"Series",
+    default:null
+  }
 });
 
 // Compile model from schema

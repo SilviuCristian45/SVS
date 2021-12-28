@@ -11,7 +11,14 @@ let CategoryModelSchema = new Schema({
       }
     ],
     default:[null]
-  } 
+  },
+  profileFans : {
+    type:[{
+      type:Schema.Types.ObjectId,
+      ref:"Profile"
+    }],
+    default:[null]
+  }
 });
 
 // Compile model from schema

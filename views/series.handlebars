@@ -1,0 +1,11 @@
+<h1>Seriale</h1>
+
+<ul>
+    {{#each series}}
+        <ul> {{this.name}}
+            {{#each this.contentsObjects}} <!-- parcurgem obiectele de tip content-->
+                <li> <a href="../viewContent/{{this.path}}"> {{this.path}} </a> </li>
+            {{/each}}
+        </ul>
+    {{/each}}
+</ul>

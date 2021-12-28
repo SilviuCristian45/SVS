@@ -1,0 +1,10 @@
+<h1> Lista mea </h1>
+{{#if mylistt}}
+    <ul>
+        {{#each mylistt}}
+            <li> {{this.path}} </li>
+        {{/each}}
+    </ul>
+{{else}}
+    <p> no movies in your list </p>
+{{/if}}

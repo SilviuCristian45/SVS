@@ -42,10 +42,8 @@ router.post('/login', async (req, res) => {
     req.session.user = {
         userid:userFound._id,
         email:email
-    };
-
-    //console.log(req.session.user);
-
+    }
+    
     res.redirect('/profiles');
     //res.redirect('/content/browse');
     //luam clipurile din collection-ul content

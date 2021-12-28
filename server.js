@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const exphbs  = require('express-handlebars');
+const categoryModel = require('./models/Category');
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.engine('handlebars', exphbs());({   defaultLayout: 'main.handlebars' })
 app.set('view engine', 'handlebars');
 app.use(session({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
-    saveUninitialized:false,
+    saveUninitialized:true,
     cookie: { maxAge: oneDay },
     resave:true
 }));
@@ -28,6 +29,7 @@ app.use(express.static('public'));
 app.use('/authentication', require('./routes/authentication'));
 app.use('/content', require('./routes/content'));
 app.use('/profiles', require('./routes/profile'));
+app.use('/user', require('./routes/userProfile.js'));
 
 //database connection 
 let mongoDB = 'mongodb://127.0.0.1/svs';
@@ -35,12 +37,31 @@ mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 
 let db = mongoose.connection;
 
-//Bind connection to error event (to get notification of connection errors)
+//Bind connection to error event (to g`et notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-app.get('/', (req, res) => {
-    res.send('hello svs');
-});
+// categoryModel.create({name:"Comedie"});
+// const seriesModel = require('./models/Series');
+// let pp = new seriesModel({name:"1hundred"});
+// pp.save();
+
+// app.get('/test', (req, res) => {
+//     const contentModel = require('./models/Content');
+//     const seriesModel = require('./models/Series');
+//     const p = new contentModel({
+//         path:"mama.mp4",
+//         producer:"618c099d35cec9b439239295",
+//         quality:"1080p",
+//         category:"618d6251ab154d7e37c99a94",
+//         parentSeries:"61a662555803d2ac8b8cb1c0"
+//     });
+    
+//     p.save().then( async () => {
+//         await seriesModel.updateOne({_id:p.parentSeries}, { $push: { contents: p._id } } );
+//         res.send('hello svs');
+//     })
+    
+// });
 
 app.listen(PORT, () => {
     console.log(`SVS server started on port ${PORT}`);

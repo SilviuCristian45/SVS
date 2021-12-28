@@ -8,6 +8,20 @@ let ProfileModelSchema = new Schema({
   user:{
       type:Schema.Types.ObjectId,
       ref:"User"
+  },
+  prefferedCategories : {
+    type:[{
+      type:Schema.Types.ObjectId,
+      ref:"Category"
+    }],
+    default:[null]
+  },
+  mylist : {
+    type:[{
+      type:Schema.Types.ObjectId,
+      ref:"Content"
+    }],
+    default:[null]
   }
 });
 

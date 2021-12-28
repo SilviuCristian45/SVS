@@ -1,7 +1,7 @@
 <h1> Profilele tale </h1>
 <ul>
     {{#each profiles}}
-        <li> <a href='/content/browse'> {{this.name}} </a> 
+        <li> <a href='/content/browse/profile/{{this._id}}'> {{this.name}} </a> 
              <a href='/profiles/deleteProfile/{{this._id}}'> <img src="../img/deleteProfile.png" width="20px" height="20px"> </a> 
              <button class="editProfilebtn" name="{{this._id}}"> Edit profile </button>
         </li>
