@@ -1,5 +1,7 @@
 content
+.vscode
 public/img
 config.env
 test.js
 test2.js
+node_modules

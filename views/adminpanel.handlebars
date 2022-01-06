@@ -1,0 +1,67 @@
+<h1> Admin panel </h1>
+
+<h2> Upload content </h2>
+
+<div>{{message}}</div>
+
+<form action="/admin/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="content"> <br>
+    <input type="file" name="thumbnail"> <br>
+    <input type="text" name="title"> <br>
+    <input type="date" name="datePublication"> <br>
+    <!-- input select from category -->
+    <select name="categories" >
+    {{#each categories}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+    <!-- input select from producers -->
+    <select name="producers"> 
+    {{#each producers}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+    <!-- if it is from a series then we have a list of series on the website -->
+    <select name="series">
+        <option value="null"> Film </option> 
+    {{#each series}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+    <input type="submit" value="Upload">
+</form> 
+
+
+<!-- form for adding a new category -->
+
+<form action="/admin/addCategory" method="post">
+    <label for="categoryName">Category name</label>
+    <input type="text" name="categoryName" id="categoryName">
+    <input type="submit" value="Add category">
+</form>
+
+<br>
+
+<form action="/admin/addProducer" method="post">
+    <label for="producerName">Producer name</label>
+    <input type="text" name="producerName" id="producerName">
+    <input type="submit" value="Add producer">
+</form>
+
+<br>
+
+<form action="/admin/addSeries" method="post">
+    <label for="seriesName">Series name</label>
+    <input type="text" name="seriesName" id="seriesName">
+
+    <label for="seriesSeasons">Series name</label>
+    <input type="number" name="seriesSeasons" id="seriesSeasons">
+
+    <input type="submit" value="Add series">
+</form>
+
+<!-- adaugare content intr-un anumit serial (daca nu s-a facut asta la adaugarea content-ului) -->
+<form action="/admin/addContentSeries" method="post">
+    <!-- Content-ul disponibil - Toate titlurile  -->
+    <input type="submit" value="Add Content to Series">
+</form>

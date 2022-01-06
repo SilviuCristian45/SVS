@@ -30,6 +30,7 @@ app.use('/authentication', require('./routes/authentication'));
 app.use('/content', require('./routes/content'));
 app.use('/profiles', require('./routes/profile'));
 app.use('/user', require('./routes/userProfile.js'));
+app.use('/admin', require('./routes/admin'));
 
 //database connection 
 let mongoDB = 'mongodb://127.0.0.1/svs';
@@ -39,29 +40,6 @@ let db = mongoose.connection;
 
 //Bind connection to error event (to g`et notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-// categoryModel.create({name:"Comedie"});
-// const seriesModel = require('./models/Series');
-// let pp = new seriesModel({name:"1hundred"});
-// pp.save();
-
-// app.get('/test', (req, res) => {
-//     const contentModel = require('./models/Content');
-//     const seriesModel = require('./models/Series');
-//     const p = new contentModel({
-//         path:"mama.mp4",
-//         producer:"618c099d35cec9b439239295",
-//         quality:"1080p",
-//         category:"618d6251ab154d7e37c99a94",
-//         parentSeries:"61a662555803d2ac8b8cb1c0"
-//     });
-    
-//     p.save().then( async () => {
-//         await seriesModel.updateOne({_id:p.parentSeries}, { $push: { contents: p._id } } );
-//         res.send('hello svs');
-//     })
-    
-// });
 
 app.listen(PORT, () => {
     console.log(`SVS server started on port ${PORT}`);
