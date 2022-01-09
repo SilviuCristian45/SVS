@@ -54,7 +54,7 @@
     <label for="seriesName">Series name</label>
     <input type="text" name="seriesName" id="seriesName">
 
-    <label for="seriesSeasons">Series name</label>
+    <label for="seriesSeasons">Number of seasons </label>
     <input type="number" name="seriesSeasons" id="seriesSeasons">
 
     <input type="submit" value="Add series">
@@ -62,6 +62,66 @@
 
 <!-- adaugare content intr-un anumit serial (daca nu s-a facut asta la adaugarea content-ului) -->
 <form action="/admin/addContentSeries" method="post">
+    <label for="seriesName">Series name</label>
+    <select name="seriesName"> 
+    {{#each series}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+
+    <label for="contentName">Content name</label>
+    <select name="contentName"> 
+    {{#each contents}}
+        {{#if this.title}}
+        <option value="{{this._id}}">{{this.title}}</option>
+        {{/if}}
+    {{/each}}
+    </select> <br>
     <!-- Content-ul disponibil - Toate titlurile  -->
     <input type="submit" value="Add Content to Series">
+</form>
+
+<!-- Setare producer pt un anumit content -->
+<form action="/admin/setProducerContent" method="post">
+    <!-- alegere content --> 
+    <label for="contentName">Content name</label>
+    <select name="contentName"> 
+    {{#each contents}}
+        {{#if this.title}}
+        <option value="{{this._id}}">{{this.title}}</option>
+        {{/if}}
+    {{/each}}
+    </select> <br>
+    <!-- alegere produceri --> 
+    <select name="producers"> 
+    {{#each producers}}
+        {{#if this.name}}
+            <option value="{{this._id}}">{{this.name}}</option>
+        {{/if}}
+    {{/each}}
+    </select> <br>  
+
+    <input type="submit" value="set producer for content">
+</form>
+
+
+<!-- Setare categorie pt un anumit content -->
+<form action="/admin/setCategoryContent" method="post">
+    <!-- alegere content --> 
+    <label for="contentName">Content name</label>
+    <select name="contentName"> 
+    {{#each contents}}
+        {{#if this.title}}
+        <option value="{{this._id}}">{{this.title}}</option>
+        {{/if}}
+    {{/each}}
+    </select> <br>
+
+    <!-- alegere categorie --> 
+    <select name="categories" >
+    {{#each categories}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+    <input type="submit" value="set category for content">
 </form>

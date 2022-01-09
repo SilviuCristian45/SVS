@@ -8,6 +8,9 @@ const contentModel = require('../models/Content');
 const producerModel = require('../models/Producer');
 const seriesModel = require('../models/Series')
 
+//----CONTROLLERS
+const adminController = require('../controllers/adminController');
+
 //---MESSAGE VARIABLE----
 let messageForAdmin = "";
 
@@ -43,10 +46,12 @@ router.get('/', async (req, res) => {
     const categories = await categoryModel.find({}).lean(); 
     const producers = await producerModel.find({}).lean();
     const series = await seriesModel.find({}).lean();
+    const contents = await contentModel.find({}).lean();
     res.render('adminpanel.handlebars', {
         categories : categories,
         producers : producers,
         series : series,
+        contents : contents,
         message : messageForAdmin
     });
     messageForAdmin = '';
@@ -130,6 +135,8 @@ router.post('/addSeries', async (req, res) => {
 });
 
 
-router.post('/addContentSeries', require('../controllers/adminController').addContentToSeries);
+router.post('/addContentSeries', adminController.addContentToSeries);
+router.post('/setProducerContent', adminController.setProducerToContent);
+router.post('/setCategoryContent', adminController.setCategoryContent);
 
 module.exports = router;

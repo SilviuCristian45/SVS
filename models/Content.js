@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let ContentModelSchema = new Schema({
+  title: String,
   path: String,
   date_published: Date,
   producer:{
