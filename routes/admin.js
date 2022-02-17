@@ -76,7 +76,14 @@ router.post('/upload', upload.any(), async (req, res) => {
 
     try {
         messageForAdmin = 'added a new video succesfully';
-        await newContent.save();
+        const newContentObj = await newContent.save();
+        console.log(newContentObj)
+        await categoryModel.findByIdAndUpdate(newContentObj.category, {
+            $push : {"contents" : newContentObj._id}
+        })
+        await producerModel.findByIdAndUpdate(newContentObj.producer, {
+            $push : {"contents" : newContentObj._id}
+        })
     } catch (error) {
         console.log(error)
     }

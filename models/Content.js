@@ -4,6 +4,7 @@ let Schema = mongoose.Schema;
 
 let ContentModelSchema = new Schema({
   title: String,
+  thumbnail : String,
   path: String,
   date_published: Date,
   producer:{

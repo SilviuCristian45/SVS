@@ -5,7 +5,8 @@
     {{#each categories}}
         <ul>{{this.name}}
             {{#each this.contentsObjects}} <!-- parcurgem obiectele de tip content-->
-                <li> <a href="/content/viewContent/{{this.path}}"> {{this.title}} </a> </li>
+                <li> <a href="/content/viewContent/{{this.path}}"> 
+                {{this.title}} </a> </li>
             {{/each}}
         </ul>
     {{/each}}

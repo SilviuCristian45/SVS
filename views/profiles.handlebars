@@ -1,11 +1,37 @@
-<h1> Profilele tale </h1>
-<ul>
-    {{#each profiles}}
-        <li> <a href='/content/browse/profile/{{this._id}}'> {{this.name}} </a> 
-             <a href='/profiles/deleteProfile/{{this._id}}'> <img src="../img/deleteProfile.png" width="20px" height="20px"> </a> 
-             <button class="editProfilebtn" name="{{this._id}}"> Edit profile </button>
-        </li>
-    {{/each}}
-</ul>
+<div class="row">
 
-<button id="add-profile-btn"> Add profile </button>
+<div class="col-sm"></div>
+      
+<div class="col-sm">
+
+    <h1 class="text-center"> Profilele tale </h1>
+
+    <div class="row">
+            {{#each profiles}}
+                <div class="col-sm">
+                    <div class="text-center">
+                        <a href='/content/browse/profile/{{this._id}}'> 
+                        <img src="../img/profile.png" width="100px" height="100px">
+                        </a> 
+                    </div>
+                    <div class="text-center">{{this.name}}</div>
+
+                    <div class="text-center"> 
+                        <a href='/profiles/deleteProfile/{{this._id}}'> <img src="../img/deleteProfile.png" width="20px" height="20px"> </a> 
+                        <button class="editProfilebtn btn btn-primary " name="{{this._id}}"> Edit profile </button>
+                    </div>
+                </div>
+            {{/each}}
+    </div>
+
+    <div class="row text-center">
+
+        <div class="text-center">
+            <button id="add-profile-btn"  class="btn btn-primary"> Add profile </button>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col-sm"></div>

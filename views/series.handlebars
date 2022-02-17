@@ -4,7 +4,7 @@
     {{#each series}}
         <ul> {{this.name}}
             {{#each this.contentsObjects}} <!-- parcurgem obiectele de tip content-->
-                <li> <a href="../viewContent/{{this.path}}"> {{this.path}} </a> </li>
+                <li> <a href="../viewContent/{{this.path}}"> {{this.title}} </a> </li>
             {{/each}}
         </ul>
     {{/each}}
