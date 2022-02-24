@@ -3,6 +3,8 @@ const path = require('path');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const exphbs  = require('express-handlebars');
+const flush = require('connect-flash')
+
 const categoryModel = require('./models/Category');
 
 const app = express();
@@ -14,23 +16,28 @@ const PORT = 3000 || process.env.PORT;
 
 const oneDay = 1000 * 60 * 60 * 24;
 //middlewares/routers
-app.engine('handlebars', exphbs());({   defaultLayout: 'main.handlebars' })
-app.set('view engine', 'handlebars');
 app.use(session({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
-    saveUninitialized:true,
-    cookie: { maxAge: oneDay },
-    resave:true
+    saveUninitialized:false,
+    cookie: { path: '/', httpOnly: true, secure: false, maxAge: oneDay  },
+    resave:false
 }));
+app.engine('handlebars', exphbs());({   defaultLayout: 'main.handlebars' })
+app.set('view engine', 'handlebars');
 // app.use(cookieParser());
 app.use(express.json({limit: '20mb'}))
 app.use(express.urlencoded({ extended: false, limit: '20mb' }))
 app.use(express.static('public'));
+app.use(flush());
+
 app.use('/authentication', require('./routes/authentication'));
 app.use('/content', require('./routes/content'));
 app.use('/profiles', require('./routes/profile'));
 app.use('/user', require('./routes/userProfile.js'));
 app.use('/admin', require('./routes/admin'));
+
+
+app.get('/session' , (req, res) => res.json(req.session))
 
 //database connection 
 let mongoDB = 'mongodb://127.0.0.1/svs';

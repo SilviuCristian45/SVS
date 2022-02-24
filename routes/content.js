@@ -5,6 +5,7 @@ const contentModel = require('../models/Content');
 const categoryModel = require('../models/Category');
 const seriesModel = require('../models/Series');
 const profileModel = require('../models/Profile');
+const path = require('path');
 
 router.get('/browse/profile/:profileID', async (req, res) => {
     req.session.user.profileID = req.params.profileID;
@@ -23,7 +24,7 @@ router.get('/browse/profile/:profileID', async (req, res) => {
         categories[index].contentsObjects = contentsObjects; //adaugam un nou camp la categoria curenta,
                                                             // cu sirul curent de obiecte de tip Content , pt a afisa okay in template
     }
-    res.render('newIndex', {categories});
+    res.render('newIndex', {categories, session:req.session});
 });
 
 router.get('/browse/series', async (req, res) => {
@@ -80,6 +81,13 @@ router.get('/viewContent/video/:movie', (req, res) => {
     const stream = fs.createReadStream(videoPath, {start, end} ); //read a certain stream 
     stream.pipe(res); //create socket betweeen client and server 
 });
+
+router.get('/thumbnail/:name', (req, res) => {
+    const thumbnailName = req.params.name;
+    console.log(path.join(process.cwd(), "/content/"+thumbnailName));
+    res.set('Content-Type', 'image/jpeg')
+    res.sendFile(path.join(process.cwd(), "/content/"+thumbnailName));
+})
 
 //ruta pt afisarea tututor filmelor adaugate in lista de catre user
 router.get('/mylist', async (req, res) => {

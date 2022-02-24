@@ -2,27 +2,44 @@ const express = require('express');
 const router = express.Router();
 const userModel = require('../models/User');
 const emailValidator = require('deep-email-validator');
- 
+const mongoose = require('mongoose');
+const path = require('path')
+//configuring the dotenv file
+require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })  
+
 router.post('/register', async (req, res) => {
+    const username = req.body.username;
     const email = req.body.email;
     const pass = req.body.password;
 
-    if(!validatePassword(pass)){
-        res.send('Minimum eight characters, at least one letter lowercase , at least one letter uppercase and one number:');
-        return;
+    //console.log(process.env.devmode);
+
+    if(process.env.devmode != 1){ //validate only when devmode is 0 
+        if(!validatePassword(pass)){
+            res.send('Minimum eight characters, at least one letter lowercase , at least one letter uppercase and one number:');
+            return;
+        }
+    
+        const isEmailReal = await isEmailValid(email);
+    
+        if(isEmailReal.valid === false){
+            res.send('Please provide an valid email');
+            return;
+        }
     }
 
-    const isEmailReal = await isEmailValid(email);
+    const newUser = new userModel({
+        _id: new mongoose.Types.ObjectId(),
+        username, email, 
+        password:pass
+    });
 
-    if(isEmailReal.valid === false){
-        res.send('Please provide an valid email');
-        return;
-    }
+    setUpSession(req, newUser._id ,email);
 
-    const newUser = new userModel({username:'Silviu', email, password:pass});
-    newUser.save( err => { console.log(err);} );
-
-    res.send('user inregistrat cu succes');
+    newUser.save().then( () => {
+        req.flash('message','Succesfully registered. Congrats :) and welcome');
+        res.redirect('/profiles')
+    }).catch(err => console.log(err));
     
 });
 
@@ -38,11 +55,7 @@ router.post('/login', async (req, res) => {
         return;
     }
 
-    req.session.authenticated = true;
-    req.session.user = {
-        userid:userFound._id,
-        email:email
-    }
+    setUpSession(req, userFound._id, email);
     
     res.redirect('/profiles');
     //res.redirect('/content/browse');
@@ -70,6 +83,14 @@ function sendConfirmationCode(email){
 //output: true/false - bool
 function validatePasswordLogin(password){
 
+}
+
+function setUpSession(req, userid, email){
+    req.session.authenticated = true;
+    req.session.user = {
+        userid,
+        email
+    }
 }
 
 module.exports = router;

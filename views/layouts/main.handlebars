@@ -4,17 +4,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>svs-app</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/form.css">
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/css/profiles.css">
+    <script src="/js/hamburger.js" defer></script>
+
+    <nav id="nav">
+            <ul id="navlist">
+                {{#if session.authenticated}} <!-- daca e autentificat nu mai afisam  navbar-ul obisnuit -->
+                    <li> <a href="#">filme</a></li>
+                    <li> <a href="#">seriale</a></li>
+                {{#else}}
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="register.html">Register</a></li>
+                    <li><a href="login.html">Login</a></li>
+                {{/else}}
+                {{/if}}
+                <button id="hamburger-btn"> hamburger </button> 
+            </ul>
+    </nav>
+   
+
     {{#each scripts}} <!-- scripturi pe care le import in template-ul pe care o sa il randez -->
         <script src="{{script}}" defer></script>
     {{/each}}
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="register.html">Register</a></li>
-            <li><a href="login.html">Login</a></li>
-        </ul>
-    </nav>
     
 </head>
 <body>

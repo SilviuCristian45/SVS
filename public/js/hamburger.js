@@ -5,14 +5,21 @@ let isClicked = false;
 
 hamburgerBtn.addEventListener('click', () => {
     if(!isClicked){
-        navbarList.style.display = 'block';
+        navbarList.style.display = 'flex';
+        navbarList.style.flexDirection = 'column';
         navbar.style.flexDirection = 'column-reverse';
         hamburgerBtn.style.marginLeft = '0';
     }
     else{
-        navbarList.style.display = '';
+        navbarList.style.display = 'none';
         navbar.style.flexDirection = 'row';
         hamburgerBtn.style.marginLeft = 'auto';
     }
     isClicked = !isClicked
 })
+
+window.addEventListener('resize', () => {
+    if(isClicked && window.innerWidth >= 300){
+        navbarList.flexDirection = 'row'
+    }
+});

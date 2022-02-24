@@ -1,21 +1,30 @@
+let addProfileClicked = false;
+let editProfileClicked = false;
+
 document.getElementById('add-profile-btn').addEventListener('click', () => {
+    if(addProfileClicked)
+        return;
     console.log('we should add a profile');
     //generez un formular nou si o sa il adaug in template 
     //formularul va face un insert in profile collection si bam bam 
     let form = generateForm('/profiles/addProfile/', 'profilename');
-    document.getElementsByTagName('body')[0].appendChild(form);
+    let parentBtn = document.getElementById('add-profile-btn').parentElement;
+    parentBtn.appendChild(form)
+    //console.log(parentOfBtn)
+    //parentOfBtn.appendChild(form);
+    addProfileClicked = true;
 });
 
 Array.prototype.forEach.call(document.getElementsByClassName('editProfilebtn'), function(btn) {
     btn.addEventListener('click', () => {
         const idProfileToEdit = btn.getAttribute("name");
         let form = generateForm('/profiles/editProfile/'+idProfileToEdit,'profileId');
-        btn.parentElement.appendChild(form);
+        btn.parentElement(form);
         console.log('edit profile');
     });
 });
 
-console.log(document.getElementsByClassName('editProfilebtn'));
+//console.log(document.getElementsByClassName('editProfilebtn'));
 
 
 /* Function that returns a form with 1 field and 1 submit button

@@ -1,37 +1,33 @@
-<div class="row">
+<p>
+    {{#if message}}
+    {{message}}
+    {{/if}}
+</p>
 
-<div class="col-sm"></div>
-      
-<div class="col-sm">
+ <div class="main"> <!-- main container -->
+    
+    <h1> Profilele tale </h1>
+    <section id="description">
+        <table>
+                {{#each profiles}}
+                    <tr>
+                        <td>
+                            <a href='/content/browse/profile/{{this._id}}'> 
+                            <img src="../img/profile.png" width="100px" height="100px">
+                            </a> 
+                        </td>
 
-    <h1 class="text-center"> Profilele tale </h1>
+                        <td>{{this.title}}</td>
 
-    <div class="row">
-            {{#each profiles}}
-                <div class="col-sm">
-                    <div class="text-center">
-                        <a href='/content/browse/profile/{{this._id}}'> 
-                        <img src="../img/profile.png" width="100px" height="100px">
-                        </a> 
-                    </div>
-                    <div class="text-center">{{this.name}}</div>
+                        <td> 
+                            <a href='/profiles/deleteProfile/{{this._id}}'> <img src="../img/deleteProfile.png" width="50px" height="50px"> </a> 
+                        </td>
 
-                    <div class="text-center"> 
-                        <a href='/profiles/deleteProfile/{{this._id}}'> <img src="../img/deleteProfile.png" width="20px" height="20px"> </a> 
-                        <button class="editProfilebtn btn btn-primary " name="{{this._id}}"> Edit profile </button>
-                    </div>
-                </div>
-            {{/each}}
-    </div>
-
-    <div class="row text-center">
-
-        <div class="text-center">
-            <button id="add-profile-btn"  class="btn btn-primary"> Add profile </button>
-        </div>
-
-    </div>
-
-</div>
-
-<div class="col-sm"></div>
+                        <td>
+                            <button class="editProfilebtn btn btn-primary " name="{{this._id}}"> Edit profile </button>
+                        </td>
+                    </tr>
+                {{/each}}
+        </table>
+        <button id="add-profile-btn"  class="btn btn-primary"> Add profile </button>
+    </section>

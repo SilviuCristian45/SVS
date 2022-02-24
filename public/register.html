@@ -5,48 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVS - Register</title>
     <script defer src="js/index.js"></script>
-    <!-- Navbar-ul -->
-    <nav>
-      <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="register.html">Register</a></li>
-          <li><a href="login.html">Login</a></li>
-      </ul>
-  </nav>
+    <!-- Style css -->
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/form.css">
+    <script src="./js/hamburger.js" defer></script>
+    <!-- Navbar -->
+    <nav id="nav">
+        <ul id="navlist">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="register.html">Register</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+        <button id="hamburger-btn"> hamburger </button> 
+    </nav>
 </head>
 <body>
-    <div class="">
-          <div class=""></div>
 
-          <div class="">
+  <div class="main"> <!-- main container -->
+        
+    <h1>SFLIX - Register</h1>
+    <section id="description">
+      <form action="/authentication/register" method="post">
+        <div class="form-group">
+          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="email">
+        </div>
+        <div>
+          <input type="password" placeholder="Username" name="username">
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password">
+        </div>
+        <div>
+          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Repeat password" name="repeat-password">
+        </div>
+        <button type="submit" class="btn-submit">Register</button>
+    </form> 
+    </section>
+  </div>
 
-              <h3> SFLIX - Register  </h3>
-
-              <div class=" ">
-                Join our community
-              </div>
-
-              <form action="/authentication/register" method="post">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="email">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Repeat password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Repeat password" name="repeat-password">
-                  </div>
-
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                
-          </div>
-
-          <div class=""></div>
-    </div>
+  <footer>Copyright 2022</footer>
 </body>
 </html>
