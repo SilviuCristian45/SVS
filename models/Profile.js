@@ -22,6 +22,26 @@ let ProfileModelSchema = new Schema({
       ref:"Content"
     }],
     default:[null]
+  }, 
+  contentLiked : {
+    type:[{
+      type:Schema.Types.ObjectId,
+      ref:"Content"
+    }],
+    default:[null]
+  },
+  contentDisLiked : {
+    type:[{
+      type:Schema.Types.ObjectId,
+      ref:"Content"
+    }],
+    default:[null]
+  },
+  contentViewed : {
+    type:[{
+      type:Schema.Types.ObjectId,
+      ref:"Content"
+    }]
   }
 });
 

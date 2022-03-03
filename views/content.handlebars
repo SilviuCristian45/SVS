@@ -4,7 +4,9 @@
         <source src='http://localhost:3000/content/viewContent/video/{{movie.path}}' type="video/mp4"> </source>
 </video>
 
+<div> Views : {{movie.views}} </div>
 <div> Likes :  {{movie.likes}} </div>
+<diV> <a href="http://localhost:3000/content/rate/{{movie._id}}/1">Like film</a></diV>
 <div> Dislikes : {{movie.dislikes}} </div>
-<div> comments section </div>
+<diV> <a href="http://localhost:3000/content/rate/{{movie._id}}/-1">Dislike film</a></diV>
 <a href="/content/addToMyList/{{movie._id}}"> Add to my list </a>

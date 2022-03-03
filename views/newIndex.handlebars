@@ -1,24 +1,75 @@
 
+<link rel="stylesheet" href="/css/content.css">
+
 <h2> Filme </h2>
-<ul>
-    {{#each categories}}
-        <ul>
-            {{this.name}}
-            {{#each this.contentsObjects}} <!-- parcurgem obiectele de tip content-->
-                <li>
-                     <a href="/content/viewContent/{{this.path}}"> 
-                        <img src="http://localhost:3000/content/thumbnail/{{this.thumbnail}}" width="200px" height="100px"> 
-                     </a> 
+
+<div id="popular-content">
+    Recent adaugate
+    <ul class="contentList">
+        {{#if recentContent}}
+            {{#each recentContent}}
+                <li style="list-style: none;">
+                    <a href="/content/viewContent/{{_id}}"> 
+                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" width="200px" height="100px"> 
+                    </a> 
                 </li>
             {{/each}}
-        </ul>
-    {{/each}}
-</ul>
+        {{/if}}
+    </ul>
+</div>  
 
-<h2> <a href="/content/browse/series"> Seriale </a> </h2>
+<div id="popular-content">
+    Populare in aceasta saptamana
+    <ul class="contentList">
+        {{#if popularityContent}}
+            {{#each popularityContent}}
+                <li style="list-style: none;">
+                    <a href="/content/viewContent/{{_id}}"> 
+                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" width="200px" height="100px"> 
+                    </a> 
+                </li>
+            {{/each}}
+        {{/if}}
+    </ul>
+</div>  
+
+<div id="recommended-content">
+    Recomandate pentru tine
+    <ul class="contentList">
+        {{#if contentRecomended}}
+            {{#each contentRecomended}}
+                <li style="list-style: none;">
+                    <a href="/content/viewContent/{{_id}}"> 
+                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" width="200px" height="100px"> 
+                    </a> 
+                </li>
+            {{/each}}
+        {{/if}}
+    </ul>
+</div>
+
+{{#each categories}}
+    Category : {{this.name}}
+    <ul class="contentList">
+        {{#if this.contentsObjects}}
+            {{#each this.contentsObjects}} <!-- parcurgem obiectele de tip content-->
+                {{#if this}}
+                    <li style="list-style: none;">
+                        <a href="/content/viewContent/{{this._id}}"> 
+                            <img src="http://localhost:3000/content/thumbnail/{{this.thumbnail}}" width="200px" height="100px"> 
+                        </a> 
+                    </li>
+                {{/if}}
+            {{/each}}
+        {{/if}}
+    </ul>
+{{/each}}
+
+
+{{!-- <h2> <a href="/content/browse/series"> Seriale </a> </h2>
 
 <a href="../../mylist"> Lista mea de continut </a>
 
 <!-- Editare profil features -->
 <br>
-<a href="/user/viewProfile"> View my profile </a>
+<a href="/user/viewProfile"> View my profile </a> --}}

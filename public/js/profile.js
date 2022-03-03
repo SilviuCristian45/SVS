@@ -19,7 +19,8 @@ Array.prototype.forEach.call(document.getElementsByClassName('editProfilebtn'), 
     btn.addEventListener('click', () => {
         const idProfileToEdit = btn.getAttribute("name");
         let form = generateForm('/profiles/editProfile/'+idProfileToEdit,'profileId');
-        btn.parentElement(form);
+        const parentBtn = btn.parentElement;
+        parentBtn.appendChild(form);
         console.log('edit profile');
     });
 });

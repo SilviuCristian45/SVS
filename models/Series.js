@@ -11,6 +11,7 @@ let SeriesModelSchema = new Schema({
     ref:"Content",
     default:null
     }],
+  thumbnail:String
 });
 
 // Compile model from schema

@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const maxSize = 10 * 1024 * 1024; //10 mb max upload size
+const maxSize = 18 * 1024 * 1024; //10 mb max upload size
 
 const upload = multer({
     storage:storage,
@@ -84,6 +84,7 @@ router.post('/upload', upload.any(), async (req, res) => {
         await producerModel.findByIdAndUpdate(newContentObj.producer, {
             $push : {"contents" : newContentObj._id}
         })
+
     } catch (error) {
         console.log(error)
     }
@@ -124,10 +125,12 @@ router.post('/addProducer', async (req, res) => {
     res.redirect('/admin');
 });
 
-router.post('/addSeries', async (req, res) => {
+router.post('/addSeries', upload.any(), async (req, res) => {
+    
     const newSeries = new seriesModel({
         name:req.body.seriesName,
-        seasons:req.body.seriesSeasons
+        seasons:req.body.seriesSeasons,
+        thumbnail:req.files[0].originalname
     });
 
     try {

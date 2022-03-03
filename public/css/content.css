@@ -1,0 +1,9 @@
+.contentList{
+    display: flex;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+}
+
+.contentList > li {
+    padding: 5px;
+}

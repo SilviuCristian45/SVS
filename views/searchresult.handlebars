@@ -1,0 +1,18 @@
+<h1>Result : </h1>
+
+<div id="popular-content">
+    <ul class="contentList">
+        {{#if content}}
+            {{#each content}}
+                <li style="list-style: none;">
+                    <a href="/content/viewContent/{{_id}}"> 
+                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" width="200px" height="100px"> 
+                    </a> 
+                    {{title}}
+                </li>
+            {{/each}}
+        {{else}}
+            <p>No results</p>
+        {{/if}}
+    </ul>
+</div>  

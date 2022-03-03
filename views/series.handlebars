@@ -3,9 +3,7 @@
 <ul>
     {{#each series}}
         <ul> {{this.name}}
-            {{#each this.contentsObjects}} <!-- parcurgem obiectele de tip content-->
-                <li> <a href="../viewContent/{{this.path}}"> {{this.title}} </a> </li>
-            {{/each}}
+            <li> <a href="/content/viewSeries/{{this._id}}">  <img src="/content/thumbnail/{{this.thumbnail}}" alt="no thumbnail" width="200px" height="100px"> </a> </li>
         </ul>
     {{/each}}
 </ul>

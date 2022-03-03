@@ -1,0 +1,11 @@
+<h1>Episodes : </h1>
+
+<ol>
+    {{#each episodes}}
+        <li>
+              <a href="/content/viewContent/{{this._id}}"> 
+                    <img src="/content/thumbnail/{{this.thumbnail}}" width="200px" height="100px"> 
+              </a> 
+        </li>
+    {{/each}}
+</ol>

@@ -13,6 +13,7 @@ const addContentToSeries = async (req, res) => {
     const oldSeriesID = content.parentSeries;
     if(oldSeriesID)
         await seriesModel.findOneAndUpdate({_id:oldSeriesID}, {$pull : {"contents" : {$in : contentID}}});
+    console.log('adaugam in serialul '+seriesID+' ' + contentID)
     await seriesModel.findOneAndUpdate({_id:seriesID}, {$push : {"contents" : contentID}});
     await contentModel.findOneAndUpdate({_id:contentID}, {$set : {"parentSeries" : seriesID} } );
     res.redirect('/admin')

@@ -6,6 +6,18 @@ let ContentModelSchema = new Schema({
   title: String,
   thumbnail : String,
   path: String,
+  likes : {
+    type:Number,
+    default:0
+  },
+  dislikes : {
+    type:Number,
+    default:0
+  },
+  views : {
+    type:Number,
+    default:0
+  },
   date_published: Date,
   producer:{
       type:Schema.Types.ObjectId,

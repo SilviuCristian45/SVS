@@ -10,7 +10,7 @@ async function displayProfiles(req, res) {
     
     userModel.findOne({_id:currentUserID}).populate('profiles').lean().exec( (err, user) => {
         if(err) return handleError(err)
-        res.render('profiles',{profiles:user.profiles, scripts, message: req.flash('message'), session:req.session });
+        res.render('profiles',{profiles:user.profiles, scripts, message: req.flash('message'), session:req.session, layout: 'profiles'});
     })
     
 }

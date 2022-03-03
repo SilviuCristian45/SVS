@@ -8,13 +8,22 @@
     <link rel="stylesheet" type="text/css" href="/css/form.css">
     <link rel="stylesheet" type="text/css" href="/css/index.css">
     <link rel="stylesheet" type="text/css" href="/css/profiles.css">
+    <link rel="stylesheet" href="/css/searchForm.css">
     <script src="/js/hamburger.js" defer></script>
 
     <nav id="nav">
             <ul id="navlist">
                 {{#if session.authenticated}} <!-- daca e autentificat nu mai afisam  navbar-ul obisnuit -->
-                    <li> <a href="#">filme</a></li>
-                    <li> <a href="#">seriale</a></li>
+                    <li> <a href="/content/browse/profile/{{session.user.profileID}}">filme</a></li>
+                    <li> <a href="/content/browse/series">seriale</a></li>
+                    <li> <a href="/content/mylist">lista mea</a></li>
+                    <li> 
+                        <form action="/content/search" method="post" class="form-inline">
+                            <input type="text" name="contentSearch"> 
+                            <input type="submit" value="Search">
+                        </form>
+                    </li>
+                    <li> <a href="/user/viewProfile"> Profilul meu </a></li>
                 {{#else}}
                     <li><a href="index.html">Home</a></li>
                     <li><a href="register.html">Register</a></li>
@@ -24,7 +33,6 @@
                 <button id="hamburger-btn"> hamburger </button> 
             </ul>
     </nav>
-   
 
     {{#each scripts}} <!-- scripturi pe care le import in template-ul pe care o sa il randez -->
         <script src="{{script}}" defer></script>

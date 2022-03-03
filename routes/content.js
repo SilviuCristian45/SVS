@@ -6,6 +6,8 @@ const categoryModel = require('../models/Category');
 const seriesModel = require('../models/Series');
 const profileModel = require('../models/Profile');
 const path = require('path');
+const recomandationController = require('../controllers/recommendation')
+const popularityController = require('../controllers/popularity');
 
 router.get('/browse/profile/:profileID', async (req, res) => {
     req.session.user.profileID = req.params.profileID;
@@ -23,31 +25,44 @@ router.get('/browse/profile/:profileID', async (req, res) => {
         }
         categories[index].contentsObjects = contentsObjects; //adaugam un nou camp la categoria curenta,
                                                             // cu sirul curent de obiecte de tip Content , pt a afisa okay in template
-    }
-    res.render('newIndex', {categories, session:req.session});
+    } 
+    const profile = await profileModel.findById(req.session.user.profileID).lean()
+    const favCategory = await recomandationController.recommendFilms(profile.contentLiked)
+    const contentToRecommend = await recomandationController.getRandomContentFromCategories(favCategory, profile.contentViewed)
+    const recentContent = await contentModel.find().limit(10).sort({date_published:-1});
+    const popularContent = await popularityController.updatePopularityRatings(contentModel);
+    
+    res.render('newIndex', {
+        categories, 
+        recentContent: recentContent ? recentContent.map(c => c.toJSON()) : [] ,
+        session:req.session,
+        contentRecomended : contentToRecommend ? contentToRecommend.map( c => c.toJSON() ) : [],
+        popularityContent : popularContent ? popularContent : []
+    });
 });
+
+
 
 router.get('/browse/series', async (req, res) => {
     const serieses = await seriesModel.find().lean(); //convertim in js object
     console.log('randam serialele')
-    for (let i = 0; i < serieses.length; i++) {
-        //serial.contents e un array de refs, trebuie populat
-        let contentObjects = [];
-        for (let j = 0; j < serieses[i].contents.length; j++) {//parcurgem object id-urile episoadelor din acest serial 
-            const serialContent = await contentModel.findOne({_id:serieses[i].contents[j]}).lean(); //preluam documentul corespunzator din db
-            contentObjects.push(serialContent);//append la array-ul de obiercte
-        }
-        serieses[i].contentsObjects = contentObjects; //adaugam un camp in obiectul fiecarui serial unde stocam array-ul de obiecte
-    }
-    res.render('series',{series:serieses});
+    // for(let i = 0; i < serieses.length; i++){
+    //     const continuturiRezultate = await contentModel.find({parentSeries : serieses[i]._id}).lean()
+    //     serieses[i].contentsObjects = continuturiRezultate
+    // }
+    console.log(serieses)
+    res.render('series',{series:serieses, session:req.session});
 });
 
 //seeing the video page
 router.get('/viewContent/:moviePath', async (req, res) => {
    const moviePath = req.params.moviePath; 
    const contentObject = await contentModel.findOne({
-       path : moviePath
+       _id : moviePath
    }).lean();
+   //adaugam in lista de viewed a profilului curent 
+   await profileModel.findOneAndUpdate({_id:req.session.user.profileID}, {$push : {"contentViewed" : moviePath} } )
+   await contentModel.findOneAndUpdate({_id:moviePath}, {$inc : {"views" : 1}})
    res.render('content', {movie:contentObject});
 });
 
@@ -59,10 +74,9 @@ router.get('/viewContent/video/:movie', (req, res) => {
     if(!range)
         res.status(400).send('Requires range header');
 
-    console.log('se trimit chunks pt videoclip ' + moviePath);
+    //console.log('se trimit chunks pt videoclip ' + moviePath);
     //console.log('range is ' + range);
     const videoPath = './content/'+moviePath;
-    console.log(videoPath);
     const videoSize = fs.statSync(videoPath).size;
 
     const chunkSize = (10**6)/2; //1000 000 bytes = 1MB
@@ -84,7 +98,7 @@ router.get('/viewContent/video/:movie', (req, res) => {
 
 router.get('/thumbnail/:name', (req, res) => {
     const thumbnailName = req.params.name;
-    console.log(path.join(process.cwd(), "/content/"+thumbnailName));
+    //console.log(path.join(process.cwd(), "/content/"+thumbnailName));
     res.set('Content-Type', 'image/jpeg')
     res.sendFile(path.join(process.cwd(), "/content/"+thumbnailName));
 })
@@ -95,7 +109,7 @@ router.get('/mylist', async (req, res) => {
     const currentProfileID = req.session.user.profileID;
     //get all contents added by the current profile 
     profileModel.findOne({_id:currentProfileID}).lean().populate('mylist').exec(function(err, currentProfile){
-       res.render('mylist', {mylistt:currentProfile.mylist})
+       res.render('mylist', {mylistt:currentProfile.mylist, session:req.session})
     });
 });
 
@@ -105,5 +119,71 @@ router.get('/addToMyList/:movieID', async (req, res) => {
     await profileModel.updateOne({_id:profileLogged}, { $push: { mylist: movieID } } );
     res.redirect('/content/mylist');
 });
+
+router.post('/search', async (req, res) => {
+    const contentSearch = req.body.contentSearch
+    console.log(`.*${contentSearch} .*`)
+    const result = await contentModel.find({title : { $regex : `.*${contentSearch}.*`} } );
+    res.render('searchresult', {content : result.map( r => r.toJSON() ), session:req.session})
+})
+
+function isInArray(arr, el){
+    for (let index = 0; index < arr.length; index++)
+        if(arr[index] == el)
+            return true;
+    return false;
+}
+
+router.get('/rate/:filmID/:vote', async (req, res) => {
+    const filmID = req.params.filmID
+    const vote = req.params['vote']
+    const profilID = req.session.user.profileID
+
+    console.log(vote == 1)
+
+    const currentProfile = await profileModel.findOne({_id:profilID}).lean()
+
+    const alreadyliked = (currentProfile.contentLiked == undefined) ? false : isInArray(currentProfile.contentLiked, filmID)
+    const alreadyDisliked = (currentProfile.contentDisLiked == undefined) ? false : isInArray(currentProfile.contentDisLiked, filmID)
+    
+    console.log(`already liked : ${alreadyliked}`)
+    console.log(`already disliked : ${alreadyDisliked}`)
+
+    if(vote == 1 && alreadyliked)
+        res.json({message : 'already liked'})
+    if(vote == -1 && alreadyDisliked)
+        res.json({message : 'already disliked'})
+
+    if(vote == 1 && !alreadyliked && !alreadyDisliked){ //daca a dat like si deja nu a mai avut la liked filmul 
+        await contentModel.updateOne({_id:filmID}, {$inc : {likes : vote}}) //increase the like of the viewed content 
+        await profileModel.updateOne({_id:profilID}, {$push : {"contentLiked" : filmID}})
+    }
+    else if(vote == 1 && !alreadyliked && alreadyDisliked){
+        await profileModel.updateOne({_id:profilID}, {$pull : {"contentDisLiked" : filmID}})
+        await contentModel.updateOne({_id:filmID}, {$inc : {dislikes : -1}}) 
+        await contentModel.updateOne({_id:filmID}, {$inc : {likes : vote}})
+        await profileModel.updateOne({_id:profilID}, {$push : {"contentLiked" : filmID}})
+    }
+    else if(vote == -1 && !alreadyDisliked && !alreadyliked){//daca a dat dislike si nu avea la liked filmul
+        await contentModel.updateOne({_id:filmID}, {$inc : {dislikes : +1}}) //increase the like of the viewed content 
+        await profileModel.updateOne({_id:profilID}, {$push : {"contentDisLiked" : filmID}})
+    }
+    else if (vote == -1 && !alreadyDisliked && alreadyliked){
+        await profileModel.updateOne({_id:profilID}, {$pull : {"contentLiked" : filmID}})
+        await contentModel.updateOne({_id:filmID}, {$inc : {dislikes : 1}}) 
+        await contentModel.updateOne({_id:filmID}, {$inc : {likes : -1}})
+        await profileModel.updateOne({_id:profilID}, {$push : {"contentDisLiked" : filmID}})
+    }
+    
+    res.json({like:'succes'})
+});
+
+router.get('/viewSeries/:seriesid', async (req, res) => {
+    const seriesID = req.params.seriesid
+    const episodes = await contentModel.find({parentSeries : seriesID}).lean()
+    console.log('##')
+    console.log(episodes)
+    res.render('seriesEpisodes', {episodes : episodes, session : req.session})
+})
 
 module.exports = router;
