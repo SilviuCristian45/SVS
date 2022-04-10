@@ -1,0 +1,10 @@
+<h1> {{categName}}</h1>
+<div id="container">
+    {{#each content}}
+        <div class="episode">
+                <a href="/content/viewContent/{{this._id}}"> 
+                    <img src="/content/thumbnail/{{this.thumbnail}}" width="300px" height="200px"> 
+                </a> 
+            </div>
+    {{/each}}
+</div>

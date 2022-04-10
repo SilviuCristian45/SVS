@@ -1,9 +1,37 @@
+<link rel="stylesheet" href="/css/content.css">
+
+
 <h1>Seriale</h1>
 
-<ul>
-    {{#each series}}
+Seriale recent adaugate 
+<ul class="contentList">
+    {{#each recentSerieses}}
+         <li style="list-style: none;"> <div>{{this.name}}</div> <a href="/content/viewSeries/{{this._id}}">   <img src="/content/thumbnail/{{this.thumbnail}}" alt="no thumbnail" class="contentThumbnail"> </a> </li>
+    {{/each}}
+</ul>
+
+ Seriale recomandate pentru tine 
+<ul class="contentList">
+    {{#each recomendedSerieses}}
+         <li style="list-style: none;"> <div>{{this.name}}</div> <a href="/content/viewSeries/{{this._id}}">   <img src="/content/thumbnail/{{this.thumbnail}}" alt="no thumbnail" class="contentThumbnail"> </a> </li>
+    {{/each}}
+</ul>
+
+Seriale populare in aceasta saptamana 
+<ul class="contentList"> 
+    {{#each popularSeries}}
+         <li style="list-style: none;"> <div>{{this.name}}</div> <a href="/content/viewSeries/{{this._id}}">   <img src="/content/thumbnail/{{this.thumbnail}}" alt="no thumbnail" class="contentThumbnail"> </a> </li>
+    {{/each}}
+</ul>
+
+{{!-- 
+{{#each categories}}
+Categoria : {{this.name}}
+<ul class="contentList">
+    {{#each this.contentObjects}}
         <ul> {{this.name}}
-            <li> <a href="/content/viewSeries/{{this._id}}">  <img src="/content/thumbnail/{{this.thumbnail}}" alt="no thumbnail" width="200px" height="100px"> </a> </li>
+            <li style="list-style: none;"> <a href="/content/viewSeries/{{this._id}}">  <img src="/content/thumbnail/{{this.thumbnail}}" alt="no thumbnail" class="contentThumbnail"> </a> </li>
         </ul>
     {{/each}}
 </ul>
+{{/each}} --}}

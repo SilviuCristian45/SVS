@@ -1,16 +1,14 @@
-
-<link rel="stylesheet" href="/css/content.css">
-
 <h2> Filme </h2>
 
-<div id="popular-content">
+<div id="popular-content" class="containerCentered">
     Recent adaugate
     <ul class="contentList">
         {{#if recentContent}}
             {{#each recentContent}}
                 <li style="list-style: none;">
+                    <div> {{title}}</div>
                     <a href="/content/viewContent/{{_id}}"> 
-                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" width="200px" height="100px"> 
+                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" class="contentThumbnail"> 
                     </a> 
                 </li>
             {{/each}}
@@ -18,14 +16,15 @@
     </ul>
 </div>  
 
-<div id="popular-content">
+<div id="popular-content" class="containerCentered">
     Populare in aceasta saptamana
     <ul class="contentList">
         {{#if popularityContent}}
             {{#each popularityContent}}
                 <li style="list-style: none;">
+                    <div> {{title}}</div>
                     <a href="/content/viewContent/{{_id}}"> 
-                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" width="200px" height="100px"> 
+                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" class="contentThumbnail"> 
                     </a> 
                 </li>
             {{/each}}
@@ -33,14 +32,15 @@
     </ul>
 </div>  
 
-<div id="recommended-content">
+<div id="recommended-content" class="containerCentered">
     Recomandate pentru tine
     <ul class="contentList">
         {{#if contentRecomended}}
             {{#each contentRecomended}}
                 <li style="list-style: none;">
+                    <div> {{title}}</div>
                     <a href="/content/viewContent/{{_id}}"> 
-                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" width="200px" height="100px"> 
+                        <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" class="contentThumbnail"> 
                     </a> 
                 </li>
             {{/each}}
@@ -48,22 +48,6 @@
     </ul>
 </div>
 
-{{#each categories}}
-    Category : {{this.name}}
-    <ul class="contentList">
-        {{#if this.contentsObjects}}
-            {{#each this.contentsObjects}} <!-- parcurgem obiectele de tip content-->
-                {{#if this}}
-                    <li style="list-style: none;">
-                        <a href="/content/viewContent/{{this._id}}"> 
-                            <img src="http://localhost:3000/content/thumbnail/{{this.thumbnail}}" width="200px" height="100px"> 
-                        </a> 
-                    </li>
-                {{/if}}
-            {{/each}}
-        {{/if}}
-    </ul>
-{{/each}}
 
 
 {{!-- <h2> <a href="/content/browse/series"> Seriale </a> </h2>

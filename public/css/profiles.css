@@ -17,3 +17,17 @@ table{
 #add-profile-btn:hover{
     background-color: #2f6931;
 }
+
+@media only screen and (max-width: 430px) {
+    /* For mobile phones: */
+    .onlyDesktop{
+     display: none;
+    }
+}
+
+@media only screen and (min-device-width: 431px) and (max-device-width: 577px) {
+    /* For portrait layouts only */
+    .onlyDesktop{
+        display: block;
+    }
+}

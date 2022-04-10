@@ -8,6 +8,7 @@ const profileModel = require('../models/Profile');
 const path = require('path');
 const recomandationController = require('../controllers/recommendation')
 const popularityController = require('../controllers/popularity');
+const userModel = require('../models/User');
 
 router.get('/browse/profile/:profileID', async (req, res) => {
     req.session.user.profileID = req.params.profileID;
@@ -15,24 +16,27 @@ router.get('/browse/profile/:profileID', async (req, res) => {
     //parcurg fiecare categorie, pt fiecare o sa avem un array de obiecte content luate cu modelul , lean-uite pt a devenit obiecte 
     //si apoi pasate la template-ul html
     for (let index = 0; index < categories.length; index++) { //parcurgem fiecare categorie
-        const element = categories[index];
-        const contentsObjects = [];
-        //console.log(element.contents);
-        for (let i = 0; i < element.contents.length; i++) { //parcurgem content obj id-urile categ. curente 
-            const objid = element.contents[i];//stocam obj id-ul curent in aceasta variabila
-            const objContent = await contentModel.find({_id:objid}).lean(); //punem sirul de obiecte returnat
-            contentsObjects.push(objContent[0]); //punem doar primul obiect din sir (pt ca va fi unul singur in sir)
-        }
-        categories[index].contentsObjects = contentsObjects; //adaugam un nou camp la categoria curenta,
+        // const element = categories[index];
+        // const contentsObjects = [];
+        // //console.log(element.contents);
+        // for (let i = 0; i < element.contents.length; i++) { //parcurgem content obj id-urile categ. curente 
+        //     const objid = element.contents[i];//stocam obj id-ul curent in aceasta variabila
+        //     const objContent = await contentModel.find({_id:objid}).lean(); //punem sirul de obiecte returnat
+        //     contentsObjects.push(objContent[0]); //punem doar primul obiect din sir (pt ca va fi unul singur in sir)
+        // }
+        const contentObjects = await contentModel.find({category : categories[index]._id, parentSeries : null}).lean()
+        categories[index].contentsObjects = contentObjects; //adaugam un nou camp la categoria curenta,
                                                             // cu sirul curent de obiecte de tip Content , pt a afisa okay in template
     } 
+    
     const profile = await profileModel.findById(req.session.user.profileID).lean()
     const favCategory = await recomandationController.recommendFilms(profile.contentLiked)
     const contentToRecommend = await recomandationController.getRandomContentFromCategories(favCategory, profile.contentViewed)
-    const recentContent = await contentModel.find().limit(10).sort({date_published:-1});
+    const recentContent = await contentModel.find({parentSeries : null}).limit(10).sort({date_published:-1});
     const popularContent = await popularityController.updatePopularityRatings(contentModel);
     
     res.render('newIndex', {
+        cssfile : ['content.css','index.css'],
         categories, 
         recentContent: recentContent ? recentContent.map(c => c.toJSON()) : [] ,
         session:req.session,
@@ -42,16 +46,66 @@ router.get('/browse/profile/:profileID', async (req, res) => {
 });
 
 
-
 router.get('/browse/series', async (req, res) => {
     const serieses = await seriesModel.find().lean(); //convertim in js object
-    console.log('randam serialele')
-    // for(let i = 0; i < serieses.length; i++){
-    //     const continuturiRezultate = await contentModel.find({parentSeries : serieses[i]._id}).lean()
-    //     serieses[i].contentsObjects = continuturiRezultate
-    // }
-    console.log(serieses)
-    res.render('series',{series:serieses, session:req.session});
+    const categories = await categoryModel.find().lean();
+
+    for(let i = 0; i < categories.length; i++){
+        categories[i].contentObjects = []
+    }
+    for(let i = 0; i < categories.length; i++){
+        
+        for(let j = 0; j < serieses.length; j++){
+            const content = await contentModel.countDocuments({parentSeries : serieses[j]._id, category : categories[i]._id}).lean()
+            if(content > 0) //daca exista continut din categoria curenta in seria curenta
+                categories[i].contentObjects.push(serieses[j]);
+        }
+    }
+   
+    const popularSeries = serieses.map(a => Object.assign({}, a));
+    //most popular series 
+    for(let i = 0; i < popularSeries.length; i++){
+        //pt serialul curent 
+        const ups = await contentModel.aggregate([{
+            "$match" : {
+                parentSeries : popularSeries[i]._id
+            }
+        },{
+            "$addFields": {
+                "rating": {
+                  $sum: [
+                    "$likes",
+                    "$dislikes",
+                    "$views"
+                  ]
+                }
+            }
+        }])
+        const totalRating = ups.reduce( (a, episode) => a + episode.rating, 0)
+        popularSeries[i].totalRating = totalRating
+    }
+    popularSeries.sort( (a,b) => b.totalRating - a.totalRating) //sortam dupa rating serialelele 
+    
+    const recentSerieses = serieses.map(a => Object.assign({}, a))
+    for(let i = 0; i < recentSerieses.length; i++){
+        const episodes = await contentModel.find({parentSeries : recentSerieses[i]._id}).sort({date_published:-1}).lean()
+        if(episodes.length > 0){
+            const episode = episodes[0].date_published
+            recentSerieses[i].episodeRecent = episode
+        }
+        else 
+            recentSerieses[i].episodeRecent = new Date('2099/06/28');
+    }
+    recentSerieses.sort( (a,b) => a.episodeRecent-b.episodeRecent)
+    
+    //get popular categories 
+    const profile = await profileModel.findById(req.session.user.profileID).lean();
+    //console.log(profile)
+    const recomendedCategories = await recomandationController.recommendFilms(profile.contentLiked)
+    const recomendedSerieses = await recomandationController.getRandomSeriesRecomended(recomendedCategories, profile.contentViewed)
+    console.log(recomendedSerieses)
+    res.render('series',{categories:categories, popularSeries : popularSeries,recentSerieses: recentSerieses,recomendedSerieses:recomendedSerieses, session:req.session
+    ,cssfile : ['index.css']});
 });
 
 //seeing the video page
@@ -63,7 +117,12 @@ router.get('/viewContent/:moviePath', async (req, res) => {
    //adaugam in lista de viewed a profilului curent 
    await profileModel.findOneAndUpdate({_id:req.session.user.profileID}, {$push : {"contentViewed" : moviePath} } )
    await contentModel.findOneAndUpdate({_id:moviePath}, {$inc : {"views" : 1}})
-   res.render('content', {movie:contentObject});
+   contentModel.findOne({_id:moviePath}).populate('producer').exec( (err, content) => {
+        res.render('content', {movie:contentObject,producer:content.producer.toJSON(), 
+            session:req.session,
+            cssfile : ['index.css','contentwatch.css']
+        });
+   });
 });
 
 //streaming the video in the video element from the video page
@@ -109,7 +168,7 @@ router.get('/mylist', async (req, res) => {
     const currentProfileID = req.session.user.profileID;
     //get all contents added by the current profile 
     profileModel.findOne({_id:currentProfileID}).lean().populate('mylist').exec(function(err, currentProfile){
-       res.render('mylist', {mylistt:currentProfile.mylist, session:req.session})
+       res.render('mylist', {mylistt:currentProfile.mylist, session:req.session, cssfile : ['index.css']})
     });
 });
 
@@ -124,7 +183,7 @@ router.post('/search', async (req, res) => {
     const contentSearch = req.body.contentSearch
     console.log(`.*${contentSearch} .*`)
     const result = await contentModel.find({title : { $regex : `.*${contentSearch}.*`} } );
-    res.render('searchresult', {content : result.map( r => r.toJSON() ), session:req.session})
+    res.render('searchresult', {content : result.map( r => r.toJSON() ), session:req.session, cssfile : ['index.css']})
 })
 
 function isInArray(arr, el){
@@ -149,11 +208,14 @@ router.get('/rate/:filmID/:vote', async (req, res) => {
     console.log(`already liked : ${alreadyliked}`)
     console.log(`already disliked : ${alreadyDisliked}`)
 
-    if(vote == 1 && alreadyliked)
+    if(vote == 1 && alreadyliked){
         res.json({message : 'already liked'})
-    if(vote == -1 && alreadyDisliked)
+        return;
+    }
+    if(vote == -1 && alreadyDisliked){
         res.json({message : 'already disliked'})
-
+        return;
+    }
     if(vote == 1 && !alreadyliked && !alreadyDisliked){ //daca a dat like si deja nu a mai avut la liked filmul 
         await contentModel.updateOne({_id:filmID}, {$inc : {likes : vote}}) //increase the like of the viewed content 
         await profileModel.updateOne({_id:profilID}, {$push : {"contentLiked" : filmID}})
@@ -175,15 +237,43 @@ router.get('/rate/:filmID/:vote', async (req, res) => {
         await profileModel.updateOne({_id:profilID}, {$push : {"contentDisLiked" : filmID}})
     }
     
-    res.json({like:'succes'})
+    res.json({message:'succes rating'})
 });
 
 router.get('/viewSeries/:seriesid', async (req, res) => {
     const seriesID = req.params.seriesid
     const episodes = await contentModel.find({parentSeries : seriesID}).lean()
-    console.log('##')
     console.log(episodes)
-    res.render('seriesEpisodes', {episodes : episodes, session : req.session})
+    res.render('seriesEpisodes', {episodes : episodes, session : req.session, cssfile:['index.css']})
 })
+
+router.get('/films/:categoryName', async (req, res) => {
+    const categName = req.params.categoryName;
+    const categObj = await categoryModel.findOne({name : categName});
+    const categId = categObj._id;
+    const contentFromCategory = await contentModel.find({category : categId})
+    res.render('contentCategory', {cssfile : ['index.css', 'seriesEpisodes.css'], session : req.session, categName : categName, content : contentFromCategory.map( c => c.toJSON() )})
+});
+
+router.get('/series/:categoryName', async (req, res) => {
+    const categName = req.params.categoryName
+    const categObj = await categoryModel.findOne({name : categName}).lean()
+    const categID = categObj._id
+
+    const serieses = await seriesModel.find().lean()
+    const result = [] //store the serieses with the given category in query parameters
+
+    for(let i = 0; i < serieses.length; i++){
+        const x = await contentModel.find({parentSeries : serieses[i]._id}).lean();
+        if(x.length > 0){
+            if(x[0].category.toString() == categID.toString())
+                result.push(serieses[i])
+        }  
+    }
+
+    //res.json(result)
+    res.render('seriesesCategory.handlebars', {serieses : result, categName : categName, session : req.session, cssfile : ['index.css']})
+})
+
 
 module.exports = router;

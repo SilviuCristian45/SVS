@@ -2,8 +2,17 @@
     display: flex;
     overflow-x: scroll;
     scroll-behavior: smooth;
+    text-align: center;
+    padding-left: 0px;
 }
 
 .contentList > li {
     padding: 5px;
+}
+
+@media screen and (max-width: 400px){
+    .contentList {
+        overflow-y: scroll;
+        flex-direction: column;
+    }
 }

@@ -1,12 +1,36 @@
-<h1>Example App: Welcome {{{userEmail}}}</h1>
+<link rel="stylesheet" href="/css/contentwatch.css">
+<script src="/js/rating.js" defer></script>
+<h1>{{movie.title}}</h1>
+<h3> Continut produs de : {{producer.name}}   </h2>
 
-<video style="height: 400px; width:600px;" id="videoPlayer" controls muted="muted" autoplay>
-        <source src='http://localhost:3000/content/viewContent/video/{{movie.path}}' type="video/mp4"> </source>
-</video>
+<div id="container">
+        <div id="log"></div>
+        <div id="video-container">
+                <video id="videoPlayer" controls muted="muted" autoplay width="500px" height="400px">
+                        <source src='http://localhost:3000/content/viewContent/video/{{movie.path}}' type="video/mp4"> </source>
+                </video>
+                <div id="stats">
+                       
+                        <button id="like" value="{{movie._id}}" class="btn btn-success">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                        </button>
 
-<div> Views : {{movie.views}} </div>
-<div> Likes :  {{movie.likes}} </div>
-<diV> <a href="http://localhost:3000/content/rate/{{movie._id}}/1">Like film</a></diV>
-<div> Dislikes : {{movie.dislikes}} </div>
-<diV> <a href="http://localhost:3000/content/rate/{{movie._id}}/-1">Dislike film</a></diV>
-<a href="/content/addToMyList/{{movie._id}}"> Add to my list </a>
+                        <button id="dislike" value="{{movie._id}}" class="btn btn-danger">
+                                <i class="fa-solid fa-thumbs-down"></i>
+                        </button>
+                        <a href="/content/addToMyList/{{movie._id}}" class="btn btn-info" > <i class="fa-solid fa-heart"></i> </a> 
+                </div>
+                {{!-- <div id="production-container">
+                        Continut produs de : {{producer.name}}  
+                </div> --}}
+        </div>
+        <div id="ratings">
+                <div id="views"> <i class="fa-solid fa-eye"></i>  {{movie.views}} </div>
+                <div id="likes"> <i class="fa-solid fa-thumbs-up"></i>   {{movie.likes}}</div> 
+                <div id="dislikes"> <i class="fa-solid fa-thumbs-down"></i>  {{movie.dislikes}}</div>
+        </div>
+        
+</div>
+
+
+

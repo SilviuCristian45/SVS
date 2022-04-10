@@ -1,8 +1,14 @@
-<h1> Lista mea </h1>
+<link rel="stylesheet" href="/css/content.css">
+
+<h1> Lista mea de filme favorite </h1>
 {{#if mylistt}}
-    <ul>
+    <ul class="contentList">
         {{#each mylistt}}
-            <li> {{this.path}} </li>
+        <li>
+            <a href="/content/viewContent/{{this._id}}"> 
+                    <img src="/content/thumbnail/{{this.thumbnail}}" class="contentThumbnail"> 
+            </a>
+        </li> 
         {{/each}}
     </ul>
 {{else}}

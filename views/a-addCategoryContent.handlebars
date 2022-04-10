@@ -1,0 +1,23 @@
+<div class="container" style="text-align: center;">
+<!-- Setare categorie pt un anumit content -->
+<form action="/admin/setCategoryContent" method="post">
+    <!-- alegere content --> 
+    <label for="contentName">Content name</label>
+    <select name="contentName"> 
+    {{#each contents}}
+        {{#if this.title}}
+        <option value="{{this._id}}">{{this.title}}</option>
+        {{/if}}
+    {{/each}}
+    </select> <br>
+
+    <label for="categories"> Category</label>
+    <!-- alegere categorie --> 
+    <select name="categories" >
+    {{#each categories}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+    <input type="submit" value="set category for content">
+</form>
+</div> 

@@ -7,7 +7,7 @@ router.get('/viewProfile', async (req, res) => {
 
     const currentUser = await userModel.findOne({_id:req.session.user.userid}).lean();
 
-    res.render('userProfile', {user : currentUser, session:req.session});
+    res.render('userProfile', {user : currentUser, session:req.session, cssfile : ['index.css']} );//
 })
 
 router.post('/updateProfile', async (req, res) => {

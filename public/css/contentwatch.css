@@ -1,0 +1,43 @@
+
+#stats { 
+    display: flex;
+    justify-content:space-between;
+    width: 700px;
+}
+
+/* #container {
+    border: 5px solid #FFFF00;
+    text-align: center;
+} */
+
+#video-container video{
+    width: 700px;  
+}
+
+#container {
+    border: 1px solid green;
+    display: flex;
+}
+
+#ratings{
+    display: flex;
+    margin: auto;
+    justify-content: center;
+}
+
+#views, #likes, #dislikes{
+    font-size: 50px;
+    padding: 10px;
+}
+
+@media (max-width: 480px) {
+    #container {
+        border: 5px solid red;
+    }
+    #video-container video{
+        width: 100%;
+    }
+    #stats{
+        flex-direction: column;
+    }
+}

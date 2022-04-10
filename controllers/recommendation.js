@@ -1,4 +1,5 @@
-const contentModel = require('../models/Content')
+const contentModel = require('../models/Content');
+const seriesModel = require('../models/Series');
 
 //input : 
 //          films - array of films with their ObjecID's (preferrably the user liked films )
@@ -17,7 +18,7 @@ const recommendFilms = async (films) => {
         if(!alreadyCategory){
             favCategories.push({
                 '_id' : category._id.toString(),
-                'count' : 1
+                'count' : 1 
             });
         }
         else alreadyCategory['count']++;
@@ -34,11 +35,7 @@ async function getRandomContentFromCategories(categories, contentViewed) {
     if(!categories)
         return;
     for(let i = 0; i < categories.length; i++){ //parcurgem categoriile 
-        //console.log('x')
-        const randomContent = await contentModel.find({
-            category: categories[i] 
-        }) //luam content random din categoria curenta
-
+        const randomContent = await contentModel.find({category: categories[i], parentSeries : null}) //luam content random din categoria curenta
         //console.log('content random : ')
         //console.log(randomContent)
         for(let j = 0; j < randomContent.length; j++) { //parcurgem continututirle 
@@ -50,7 +47,24 @@ async function getRandomContentFromCategories(categories, contentViewed) {
     return resultContent
 }
 
+async function getRandomSeriesRecomended(categories, contentViewed) {
+    let resultContent = []
+    //console.log(categories)
+    if(!categories)
+        return;
+    const serieses = await seriesModel.find().lean()
+    for(let i = 0; i < categories.length; i++){
+        for(let j = 0; j < serieses.length; j++){
+            const content = await contentModel.findOne({parentSeries : serieses[j]._id, category : categories[i]._id}).lean()
+            if(content && !contentViewed.find( el => el.toString() == content._id.toString()))
+                resultContent.push(serieses[j])
+        }
+    }
+    return resultContent
+}
+
 module.exports = {
     recommendFilms,
-    getRandomContentFromCategories
+    getRandomContentFromCategories,
+    getRandomSeriesRecomended
 }

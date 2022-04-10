@@ -1,0 +1,22 @@
+<div class="container" style="text-align: center;">
+<!-- adaugare content intr-un anumit serial (daca nu s-a facut asta la adaugarea content-ului) -->
+<form action="/admin/addContentSeries" method="post">
+    <label for="seriesName">Series name</label>
+    <select name="seriesName"> 
+    {{#each series}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+
+    <label for="contentName">Content name</label>
+    <select name="contentName"> 
+    {{#each contents}}
+        {{#if this.title}}
+        <option value="{{this._id}}">{{this.title}}</option>
+        {{/if}}
+    {{/each}}
+    </select> <br>
+    <!-- Content-ul disponibil - Toate titlurile  -->
+    <input type="submit" value="Add Content to Series">
+</form>
+</div>

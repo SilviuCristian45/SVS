@@ -1,0 +1,16 @@
+h1 {
+    text-align: center;
+}
+#container {
+    border:1px solid black;
+    text-align: center;
+}
+
+.episode{
+    padding: 5px;
+   
+}
+
+img {
+    border:1px solid black;
+}

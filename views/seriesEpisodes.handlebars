@@ -1,11 +1,13 @@
-<h1>Episodes : </h1>
+<link rel="stylesheet" href="/css/seriesEpisodes.css">
 
-<ol>
+<h1>Episodes</h1>
+
+<div id="container">
     {{#each episodes}}
-        <li>
-              <a href="/content/viewContent/{{this._id}}"> 
-                    <img src="/content/thumbnail/{{this.thumbnail}}" width="200px" height="100px"> 
-              </a> 
-        </li>
+        <div class="episode">
+            <a href="/content/viewContent/{{this._id}}"> 
+                <img src="/content/thumbnail/{{this.thumbnail}}" width="300px" height="200px"> 
+            </a> 
+        </div>
     {{/each}}
-</ol>
+</div>

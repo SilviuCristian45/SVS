@@ -30,11 +30,20 @@ app.use(express.urlencoded({ extended: false, limit: '20mb' }))
 app.use(express.static('public'));
 app.use(flush());
 
+const checkForLogging = (req, res, next) => {
+    if(req.session.user == undefined){
+        res.redirect('/')
+    }
+    else 
+        next()
+}
+
 app.use('/authentication', require('./routes/authentication'));
-app.use('/content', require('./routes/content'));
-app.use('/profiles', require('./routes/profile'));
+app.use('/content',checkForLogging, require('./routes/content'));
+app.use('/profiles',checkForLogging, require('./routes/profile'));
 app.use('/user', require('./routes/userProfile.js'));
 app.use('/admin', require('./routes/admin'));
+
 
 
 app.get('/session' , (req, res) => res.json(req.session))

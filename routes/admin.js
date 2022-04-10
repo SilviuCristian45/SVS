@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router()
 const multer = require('multer');
-
+const path = require('path')
 //----MODELS----
 const categoryModel = require('../models/Category');
 const contentModel = require('../models/Content');
@@ -14,6 +14,8 @@ const adminController = require('../controllers/adminController');
 //---MESSAGE VARIABLE----
 let messageForAdmin = "";
 
+require('dotenv').config({ path: path.resolve(__dirname, 'config.env') }) 
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'content')
@@ -23,7 +25,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const maxSize = 18 * 1024 * 1024; //10 mb max upload size
+const maxSize = 18 * 1024 * 1024; //18 mb max upload size
 
 const upload = multer({
     storage:storage,
@@ -42,19 +44,20 @@ const upload = multer({
 //.fields([{name: 'content' , maxCount: 1}], {name:'thumbnail', maxCount:1});
 //render the panel 
 router.get('/', async (req, res) => {
-    //iau toate categoriile pt ca trebuie pasatate in admin panel pt a fi afisate in inputul select
-    const categories = await categoryModel.find({}).lean(); 
-    const producers = await producerModel.find({}).lean();
-    const series = await seriesModel.find({}).lean();
-    const contents = await contentModel.find({}).lean();
+    console.log('-##')
     res.render('adminpanel.handlebars', {
-        categories : categories,
-        producers : producers,
-        series : series,
-        contents : contents,
-        message : messageForAdmin
+        layout: 'admin', 
+        session: req.session
     });
     messageForAdmin = '';
+});
+
+router.post('/', async (req, res) => {
+    const {adminusername, adminpassword} = req.body
+    if (adminusername == process.env.adminusername && adminpassword == process.env.adminpassword){
+        req.session.adminauth = true
+        res.redirect('/admin')
+    }
 });
 
 //route for uploading content to the server
@@ -143,6 +146,51 @@ router.post('/addSeries', upload.any(), async (req, res) => {
 
     res.redirect('/admin');
 });
+
+async function setupRoutesForAdmin() {
+    //iau toate categoriile pt ca trebuie pasatate in admin panel pt a fi afisate in inputul select
+    const categories = await categoryModel.find({}).lean(); 
+    const producers = await producerModel.find({}).lean();
+    const series = await seriesModel.find({}).lean();
+    const contents = await contentModel.find({}).lean();
+
+    const options0 = {categories, producers, series}
+    const options4 = {series, contents}
+    const options5 = {producers, contents}
+    const options6 = {contents, categories}
+
+    options0['layout'] = 'admin.handlebars' 
+    options4['layout'] = 'admin.handlebars' 
+    options5['layout'] = 'admin.handlebars' 
+    options6['layout'] = 'admin.handlebars' 
+
+    const routes1 = [{r : 'addContentPage', view : 'a-uploadcontent.handlebars', options : options0},
+                     {r : 'addCategoryPage', view : 'a-uploadCategory.handlebars'}, 
+                     {r : 'addProducerPage', view : 'a-uploadProducer.handlebars'},
+                     {r : 'addSeriesPage', view : 'a-uploadSeries.handlebars'} ]
+    const routes2 = [ {r: 'addContentSeries', view : 'a-addContentSeries.handlebars', options : options4},
+                        {r : 'addProducerContent', view : 'a-addProducerContent.handlebars', options : options5},
+                        {r : 'addCategoryContent', view : 'a-addCategoryContent.handlebars', options : options6}]
+                        
+    pagesForAdminPurpose(routes1)
+    pagesForAdminPurpose(routes2)
+    
+} 
+
+
+                     
+const pagesForAdminPurpose = (routes) => {
+    for (let index = 0; index < routes.length; index++) {
+        router.get('/'+routes[index].r, (req, res) => {
+            if (routes[index].options)
+                res.render(routes[index].view, routes[index].options )
+            else 
+                res.render(routes[index].view, {'layout' : 'admin.handlebars'})
+        })
+    }
+}
+
+setupRoutesForAdmin().then( () => console.log('xxy'))
 
 
 router.post('/addContentSeries', adminController.addContentToSeries);

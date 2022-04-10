@@ -1,0 +1,34 @@
+
+
+<div>{{message}}</div>
+
+<div class="container" style="text-align: center;">
+    <h2> Upload content </h2>
+<form action="/admin/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="content"> <br>
+    <input type="file" name="thumbnail"> <br>
+    <input type="text" name="title"> <br>
+    <input type="date" name="datePublication"> <br>
+    <!-- input select from category -->
+    <select name="categories" >
+    {{#each categories}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+    <!-- input select from producers -->
+    <select name="producers"> 
+    {{#each producers}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+    <!-- if it is from a series then we have a list of series on the website -->
+    <select name="series">
+        <option value="null"> Film </option> 
+    {{#each series}}
+        <option value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    </select> <br>
+    <input type="submit" value="Upload">
+</form> 
+</div>
+
