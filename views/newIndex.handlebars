@@ -45,6 +45,23 @@
                 </li>
             {{/each}}
         {{/if}}
+
+        {{#if contentRecomended2}}
+            {{#each contentRecomended2}}
+                <li style="list-style: none;">
+                    <div> {{title}}</div>
+                    {{#if seasons}}
+                        <a href="/content/viewSeries/{{_id}}"> 
+                            <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" class="contentThumbnail"> 
+                        </a>
+                    {{else}}
+                        <a href="/content/viewContent/{{_id}}"> 
+                             <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" class="contentThumbnail"> 
+                         </a> 
+                    {{/if}}
+                </li>
+            {{/each}}
+        {{/if}}
     </ul>
 </div>
 

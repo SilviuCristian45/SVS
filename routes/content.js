@@ -16,14 +16,6 @@ router.get('/browse/profile/:profileID', async (req, res) => {
     //parcurg fiecare categorie, pt fiecare o sa avem un array de obiecte content luate cu modelul , lean-uite pt a devenit obiecte 
     //si apoi pasate la template-ul html
     for (let index = 0; index < categories.length; index++) { //parcurgem fiecare categorie
-        // const element = categories[index];
-        // const contentsObjects = [];
-        // //console.log(element.contents);
-        // for (let i = 0; i < element.contents.length; i++) { //parcurgem content obj id-urile categ. curente 
-        //     const objid = element.contents[i];//stocam obj id-ul curent in aceasta variabila
-        //     const objContent = await contentModel.find({_id:objid}).lean(); //punem sirul de obiecte returnat
-        //     contentsObjects.push(objContent[0]); //punem doar primul obiect din sir (pt ca va fi unul singur in sir)
-        // }
         const contentObjects = await contentModel.find({category : categories[index]._id, parentSeries : null}).lean()
         categories[index].contentsObjects = contentObjects; //adaugam un nou camp la categoria curenta,
                                                             // cu sirul curent de obiecte de tip Content , pt a afisa okay in template
@@ -35,12 +27,15 @@ router.get('/browse/profile/:profileID', async (req, res) => {
     const recentContent = await contentModel.find({parentSeries : null}).limit(10).sort({date_published:-1});
     const popularContent = await popularityController.updatePopularityRatings(contentModel);
     
+    const r = await recomandationController.recommendFilmsByRating(profile.contentLiked, profile.contentViewed)
+
     res.render('newIndex', {
         cssfile : ['content.css','index.css'],
         categories, 
         recentContent: recentContent ? recentContent.map(c => c.toJSON()) : [] ,
         session:req.session,
         contentRecomended : contentToRecommend ? contentToRecommend.map( c => c.toJSON() ) : [],
+        contentRecomended2 : r ? r : [],
         popularityContent : popularContent ? popularContent : []
     });
 });
@@ -275,5 +270,15 @@ router.get('/series/:categoryName', async (req, res) => {
     res.render('seriesesCategory.handlebars', {serieses : result, categName : categName, session : req.session, cssfile : ['index.css']})
 })
 
+router.get('/recommendFilmsRating',async (req, res) => {
+    const currentProfileID = req.session.user.profileID;
+    //console.log(currentProfileID)
+    const profileObject = await profileModel.findById(currentProfileID).lean()
+    //console.log(profileObject)
+    //console.log(profileObject.contentLiked)
+    const r = await recomandationController.recommendFilmsByRating(profileObject.contentLiked, profileObject.contentViewed)
+    console.log(r)
+    res.json(r)
+})
 
 module.exports = router;

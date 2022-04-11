@@ -2,7 +2,7 @@ const contentModel = require('../models/Content');
 const seriesModel = require('../models/Series');
 
 //input : 
-//          films - array of films with their ObjecID's (preferrably the user liked films )
+//          films - ariked films )ray of films with their ObjecID's (preferrably the user l
 //output:   the top 3 categories preffered by the user
 const recommendFilms = async (films) => {
     let favCategories = []
@@ -27,6 +27,55 @@ const recommendFilms = async (films) => {
     if(favCategories.length <= 3) //daca momentan sunt mai putin de 3 categorii apreciate
         return favCategories
     return [favCategories[0] , favCategories[1], favCategories[2]] //daca sunt mai multe categorii apreciate le luam doar pe primele 3
+}
+
+//input : 
+//          films - ariked films )ray of films with their ObjecID's (preferrably the user l
+const recommendFilmsByRating = async (films, filmsViewed) => {
+    let sum = 0
+    const limit = 1
+
+    if(!films)
+        return []
+
+    for(let i = 0; i < films.length; i++){
+        const el = await contentModel.findById(films[i]).lean()
+        
+        if(el && el.likes >= 0 && el.dislikes >= 0 && el.views >= 0){
+            console.log(el)
+            sum += (el.likes + el.dislikes + el.views)
+        }
+           
+    }
+    //console.log(`sum is : ${sum}`)
+
+    const average  = sum / films.length
+
+    //console.log(average)
+
+    const allFilms = await contentModel.find({})
+
+    const result = []
+
+    for(let i = 0; i < allFilms.length; i++){
+        if (!filmsViewed.includes(allFilms[i])){
+            if(allFilms[i] && allFilms[i].likes >= 0 && allFilms[i].dislikes >= 0 && allFilms[i].views >= 0){
+                const currentRating = allFilms[i].likes + allFilms[i].dislikes + allFilms[i].views
+                if(Math.abs(currentRating - average) <= limit){ //daca e in limita 
+                    if (allFilms[i].parentSeries != null){ //daca e parte dintr-un serial
+                        const sa = await contentModel.findOne({_id : allFilms[i]._id}).populate('parentSeries').lean()
+                        result.push(sa.parentSeries) //adaugam serialul in array-ul rezultat
+                    }
+                    else
+                        result.push(allFilms[i])
+                }
+            }
+        }
+    }
+    //calculam media de rating a tuturor filmelor like-uite 
+    // const filmsObjects = films.map( async el => await contentModel.findById(el) )
+    // console.log(filmsObjects)
+    return result
 }
 
 async function getRandomContentFromCategories(categories, contentViewed) {
@@ -66,5 +115,6 @@ async function getRandomSeriesRecomended(categories, contentViewed) {
 module.exports = {
     recommendFilms,
     getRandomContentFromCategories,
-    getRandomSeriesRecomended
+    getRandomSeriesRecomended,
+    recommendFilmsByRating
 }

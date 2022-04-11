@@ -17,9 +17,9 @@
     <nav id="nav">
             <div id="navlist">
                 {{#if session.authenticated}} <!-- daca e autentificat nu mai afisam  navbar-ul obisnuit -->
-                    <div class="nav-item"> <a href="">Filme</a></div>
+                    <div class="nav-item"> <a href="/content/browse/profile/{{session.user.profileID}}">Filme</a></div>
                     <div class="dropdown show nav-item">
-                        <a class="dropdown-toggle" href="/content/browse/profile/{{session.user.profileID}}" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Categorii filme
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">

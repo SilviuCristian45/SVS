@@ -13,8 +13,12 @@ Seriale recent adaugate
  Seriale recomandate pentru tine 
 <ul class="contentList">
     {{#each recomendedSerieses}}
-         <li style="list-style: none;"> <div>{{this.name}}</div> <a href="/content/viewSeries/{{this._id}}">   <img src="/content/thumbnail/{{this.thumbnail}}" alt="no thumbnail" class="contentThumbnail"> </a> </li>
+        <li style="list-style: none;"> <div>{{this.name}}</div> <a href="/content/viewSeries/{{this._id}}">   <img src="/content/thumbnail/{{this.thumbnail}}" alt="no thumbnail" class="contentThumbnail"> </a> </li>
     {{/each}}
+
+    {{#each contentRecomended2}}
+        <li style="list-style: none;"> <div>{{this.name}}</div> <a href="/content/viewSeries/{{this._id}}">   <img src="/content/thumbnail/{{this.thumbnail}}" alt="no thumbnail" class="contentThumbnail"> </a> </li>
+    {{/each}
 </ul>
 
 Seriale populare in aceasta saptamana 
