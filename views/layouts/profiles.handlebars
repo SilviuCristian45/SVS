@@ -10,7 +10,13 @@
     <link rel="stylesheet" type="text/css" href="/css/profiles.css">
     <link rel="stylesheet" href="/css/searchForm.css">
     <script src="/js/profile.js" defer></script>
+    {{#each cssfile}}
+        <link rel="stylesheet" href="/css/{{this}}">
+    {{/each}}
     
+    {{#each scripts}}
+        <script src="/js/{{this}}" defer></script>
+    {{/each}}
 </head>
 <body>
     {{{body}}}

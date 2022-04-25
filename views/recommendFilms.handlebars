@@ -1,0 +1,23 @@
+<div style="text-align: center;">
+    Choose some films
+    <div style="border: 1px solid black;" class="grid">
+        {{!-- <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+        <div>7</div>
+        <div>8</div>
+        <div>9</div> --}}
+        {{#each content}}
+            <div>
+                <input type="checkbox" id="vehicle1" name="vehicle1" value="{{_id}}">
+                <img src="http://localhost:3000/content/thumbnail/{{thumbnail}}" class="cthumbnail"> 
+                <div>{{title}}</div>
+            </div>
+        {{/each}}
+    </div>
+
+    <button id="sendPreferences"> Send my preferences </button>
+</div>

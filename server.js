@@ -6,6 +6,7 @@ const exphbs  = require('express-handlebars');
 const flush = require('connect-flash')
 
 const categoryModel = require('./models/Category');
+const profileModel = require('./models/Profile');
 
 const app = express();
 
@@ -31,9 +32,8 @@ app.use(express.static('public'));
 app.use(flush());
 
 const checkForLogging = (req, res, next) => {
-    if(req.session.user == undefined){
+    if(req.session.user == undefined)
         res.redirect('/')
-    }
     else 
         next()
 }
@@ -43,9 +43,6 @@ app.use('/content',checkForLogging, require('./routes/content'));
 app.use('/profiles',checkForLogging, require('./routes/profile'));
 app.use('/user', require('./routes/userProfile.js'));
 app.use('/admin', require('./routes/admin'));
-
-
-
 app.get('/session' , (req, res) => res.json(req.session))
 
 //database connection 
@@ -56,6 +53,19 @@ let db = mongoose.connection;
 
 //Bind connection to error event (to g`et notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+app.post('/sendLikedContent' , async (req, res) => {
+    const {firstlikedContent} = req.body;
+    const userProfile = req.session.user.profileID;
+    console.log(`get some fims liked ${firstlikedContent} from ${userProfile}`)
+    // for(let i = 0; i < firstlikedContent.length; i++){
+    //     await profileModel.findOneAndUpdate({_id : userProfile}, {$push : {'contentLiked' : firstlikedContent[i]}})
+    //     console.log(i)
+    // }
+    await profileModel.findOneAndUpdate({_id : userProfile}, {$push : {'contentLiked' : firstlikedContent}})
+    res.redirect('../profiles')
+    console.log("nush daca s-a redirectat")
+})
 
 app.listen(PORT, () => {
     console.log(`SVS server started on port ${PORT}`);

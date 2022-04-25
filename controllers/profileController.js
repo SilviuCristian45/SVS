@@ -1,3 +1,4 @@
+const contentModel = require('../models/Content');
 const profileModel = require('../models/Profile');
 const userModel = require('../models/User');
 
@@ -30,8 +31,12 @@ function addProfile(req, res) {
         }   
         else {
             response.save().then( () => { 
-                userModel.findByIdAndUpdate(userloggedObjId, {$push : {"profiles" : response._id}}).then( () => {
-                    res.redirect('/profiles'); 
+                userModel.findByIdAndUpdate(userloggedObjId, {$push : {"profiles" : response._id}}).then( async () => {
+                    //res.redirect('/profiles');
+                    //it should bring a screen with some random title user could like from diferent categories  
+                    const content = await contentModel.find({parentSeries : null}).lean()
+                    req.session.user.profileID = response._id
+                    res.render('recommendFilms', {scripts : ['preferences.js'], content, cssfile : ['recomendContent.css'], session:req.session, layout: 'profiles'})
                 })
             })
         }

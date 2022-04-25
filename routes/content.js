@@ -110,7 +110,10 @@ router.get('/viewContent/:moviePath', async (req, res) => {
        _id : moviePath
    }).lean();
    //adaugam in lista de viewed a profilului curent 
-   await profileModel.findOneAndUpdate({_id:req.session.user.profileID}, {$push : {"contentViewed" : moviePath} } )
+   const contentViewedByProfile = await profileModel.findById({_id:req.session.user.profileID}).lean()
+   if(contentViewedByProfile.contentViewed && !contentViewedByProfile.contentViewed.includes(moviePath))
+    await profileModel.findOneAndUpdate({_id:req.session.user.profileID}, {$push : {"contentViewed" : moviePath} } )
+   
    await contentModel.findOneAndUpdate({_id:moviePath}, {$inc : {"views" : 1}})
    contentModel.findOne({_id:moviePath}).populate('producer').exec( (err, content) => {
         res.render('content', {movie:contentObject,producer:content.producer.toJSON(), 

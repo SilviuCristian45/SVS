@@ -1,0 +1,10 @@
+.grid {
+    display: grid;
+    gap: 1px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.cthumbnail{
+    width: 120px;
+    height: 120px;
+}

@@ -11,6 +11,7 @@
   "author": "Dinca Silviu Cristian",
   "license": "ISC",
   "dependencies": {
+    "connect-flash": "^0.1.1",
     "deep-email-validator": "^0.1.18",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -18,7 +19,9 @@
     "express-session": "^1.17.2",
     "mongoose": "^6.0.12",
     "multer": "^1.4.4",
-    "nodemon": "^2.0.14"
+    "nodemailer": "^6.7.3",
+    "nodemon": "^2.0.14",
+    "smtp": "^0.1.4"
   },
   "type": "commonjs"
 }
